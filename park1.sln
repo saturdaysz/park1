@@ -7,7 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sensors.Dht", "..\..\..\..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sensors.OneWire", "Sensors.OneWire\Sensors.OneWire.csproj", "{C5F40A69-D010-446E-BCFB-184508F0891A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartFarmer", "SmartFarmer\SmartFarmer.csproj", "{56D7366F-36A1-46CE-B3C8-FB7360E6C718}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartFarm", "SmartFarmer\SmartFarm.csproj", "{56D7366F-36A1-46CE-B3C8-FB7360E6C718}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App2", "App2\App2.csproj", "{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,24 @@ Global
 		{56D7366F-36A1-46CE-B3C8-FB7360E6C718}.Release|x86.ActiveCfg = Release|x86
 		{56D7366F-36A1-46CE-B3C8-FB7360E6C718}.Release|x86.Build.0 = Release|x86
 		{56D7366F-36A1-46CE-B3C8-FB7360E6C718}.Release|x86.Deploy.0 = Release|x86
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|ARM.ActiveCfg = Debug|ARM
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|ARM.Build.0 = Debug|ARM
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|ARM.Deploy.0 = Debug|ARM
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|x64.ActiveCfg = Debug|x64
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|x64.Build.0 = Debug|x64
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|x64.Deploy.0 = Debug|x64
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|x86.ActiveCfg = Debug|x86
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|x86.Build.0 = Debug|x86
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Debug|x86.Deploy.0 = Debug|x86
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|ARM.ActiveCfg = Release|ARM
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|ARM.Build.0 = Release|ARM
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|ARM.Deploy.0 = Release|ARM
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|x64.ActiveCfg = Release|x64
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|x64.Build.0 = Release|x64
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|x64.Deploy.0 = Release|x64
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|x86.ActiveCfg = Release|x86
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|x86.Build.0 = Release|x86
+		{34D07885-9EA5-41EF-B1DD-A128E3EA68A4}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

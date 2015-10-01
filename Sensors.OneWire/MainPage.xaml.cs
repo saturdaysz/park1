@@ -11,6 +11,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Windows.Devices.Spi;
 using Windows.Devices.Enumeration;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 namespace Sensors.OneWire
 {
@@ -30,7 +32,7 @@ namespace Sensors.OneWire
 
             _timer.Interval = TimeSpan.FromSeconds(1);
             Lightsetup();
-          
+
             _timer.Tick += _timer_Tick;
             _timer.Tick += _timer_Tick2;
             _timer.Tick += _timer_Tick1;
@@ -61,7 +63,7 @@ namespace Sensors.OneWire
             }
 
 
-            
+
         }
 
         private void _timer_Tick3(object sender, object e)
@@ -74,17 +76,21 @@ namespace Sensors.OneWire
 
             var mv = result;
             var light = Convert.ToSingle(mv);
-       
-            string output = light + "c";
-            if (light <= 400)
-            {
-                ledpin.Write(GpioPinValue.High);
-            }
-            else
-            {
-                ledpin.Write(GpioPinValue.Low);
-            }
-            ledpin.SetDriveMode(GpioPinDriveMode.Output);
+
+            string output = light + " c";
+            //if (light >= 400)
+            //{
+            //    ledpin.Write(GpioPinValue.High);
+
+
+            //}
+            //else
+            //{
+            //    ledpin.Write(GpioPinValue.Low);
+
+
+            //}
+            //ledpin.SetDriveMode(GpioPinDriveMode.Output);
             textblocklight.Text = output;
 
 
@@ -98,7 +104,7 @@ namespace Sensors.OneWire
             HttpResponseMessage response = Client.GetAsync(url).Result;
 
 
-          
+
         }
 
         private void _timer_Tick1(object sender, object e)
@@ -109,6 +115,19 @@ namespace Sensors.OneWire
             new MediaTypeWithQualityHeaderValue("application/json"));
             var url = "https://api.thingspeak.com/update?key=923BNP2LN6RHK2U6&field2=" + this.Temperature;
             HttpResponseMessage response = Client.GetAsync(url).Result;
+            if(this.Temperature > 21)
+            {
+                ledpin.Write(GpioPinValue.High);
+
+
+            }
+            else
+            {
+                ledpin.Write(GpioPinValue.Low);
+
+
+            }
+            ledpin.SetDriveMode(GpioPinDriveMode.Output);
         }
 
         private void _timer_Tick2(object sender, object e)
@@ -117,7 +136,7 @@ namespace Sensors.OneWire
             Client.BaseAddress = new Uri("https://api.thingspeak.com/");
             Client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
-            var url = "https://api.thingspeak.com/update?key=923BNP2LN6RHK2U6&field3=" + this.Humidity ;
+            var url = "https://api.thingspeak.com/update?key=923BNP2LN6RHK2U6&field3=" + this.Humidity;
             HttpResponseMessage response = Client.GetAsync(url).Result;
         }
 

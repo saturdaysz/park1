@@ -137,6 +137,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <SDKReference Include="Telerik UI For Windows Universal, Version=2015.2.624.45">
+      <Name>Telerik UI For Windows Universal</Name>
+    </SDKReference>
     <SDKReference Include="WindowsIoT, Version=10.0.10240.0">
       <Name>Windows IoT Extensions for the UWP</Name>
     </SDKReference>

@@ -3,8 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Devices.Enumeration;
 using Windows.Devices.Gpio;
+using Windows.Devices.Spi;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -30,64 +34,219 @@ namespace SmartFarmer
         private IDht _dht11 = null;
         private List<int> _retryCount = new List<int>();
 
-   
-
+        private const int LED_PIN = 25;
+        private GpioPin ledpin;
+        private const int LED_PIN2 = 13;
+        private GpioPin ledpin2;
         public MainPage()
         {
             this.InitializeComponent();
-            _timer.Interval = TimeSpan.FromSeconds(1);
+
+            this._timer.Interval = TimeSpan.FromSeconds(1);
+            Lightsetup();
+
+
             _timer.Tick += _timer_Tick;
+            _timer.Tick += _timer_Tick2;
+            _timer.Tick += _timer_Tick1;
+            _timer.Tick += _timer_Tick3;
+
+           
+
+
+
+
+
         }
+
+        public class DataItem
+        {
+            public string Category { get; set; }
+            public double Value { get; set; }
+            public float Value1 { get; internal set; }
+            public float Value2 { get; internal set; }
+        }
+        private async void Lightsetup()
+        {
+            var spiSettings = new SpiConnectionSettings(0);
+            spiSettings.ClockFrequency = 3600000;
+            spiSettings.Mode = SpiMode.Mode0;
+            string spiQuery = SpiDevice.GetDeviceSelector("SPI0");
+
+            var deviceInfo = await DeviceInformation.FindAllAsync(spiQuery);
+            if (deviceInfo != null && deviceInfo.Count > 0)
+            {
+                _mcp3008 = await SpiDevice.FromIdAsync(deviceInfo[0].Id, spiSettings);
+            }
+            else
+            {
+                lighttext.Text = "SPI DEVICE BOT FOUND";
+
+            }
+        }
+
+
+        // MCP3008 READ AND LIGHT TEXT SHOW
+        private void _timer_Tick3(object sender, object e)
+        {
+            var transmitBuffer = new byte[3] { 1, 0x80, 0x00 };
+            var reciveBuffer = new byte[3];
+            _mcp3008.TransferFullDuplex(transmitBuffer, reciveBuffer);
+            int result = ((reciveBuffer[1] & 3) << 8);
+            result += reciveBuffer[2];
+
+            var mv = result;
+            var light = Convert.ToSingle(mv);
+
+            string output = light + " c";
+            if (light <= 300)
+            {
+                ledpin2.Write(GpioPinValue.High);
+
+
+            }
+            else
+            {
+                ledpin2.Write(GpioPinValue.Low);
+
+
+            }
+            ledpin2.SetDriveMode(GpioPinDriveMode.Output);
+            lighttext.Text = output;
+
+
+
+
+            var Client = new HttpClient();
+            Client.BaseAddress = new Uri("https://api.thingspeak.com/");
+            Client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+            var url = "https://api.thingspeak.com/update?key=923BNP2LN6RHK2U6&field1=" + light;
+            HttpResponseMessage response = Client.GetAsync(url).Result;
+            lineSeries.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            this.lineSeries.Series[0].DataContext = new List<DataItem>
+            {
+                  new DataItem() {  Value = this.Humidity},
+                  new DataItem() {  Value = this.Humidity}
+
+            };
+            this.lineSeries.Series[1].DataContext = new List<DataItem>
+            {
+                new DataItem() {Value1 = this.Temperature},
+                new DataItem() {Value1 = this.Temperature}
+            };
+            this.lineSeries.Series[2].DataContext = new List<DataItem>
+            {
+                new DataItem() {Value2 =light },
+                new DataItem() {Value2 =light }   
+            };
+            //List<Data> data1 = new List<Data>();
+            //data1.Add(new Data() { Value = this.Temperature });
+            //data1.Add(new Data() { Value = this.Temperature });
+
+            //List<Data> data2 = new List<Data>();
+            //data2.Add(new Data() { Value1 = this.Humidity });
+            //data2.Add(new Data() { Value1 = this.Humidity });
+
+            //List<Data> data3 = new List<Data>();
+            //data3.Add(new Data() { Value2 = light });
+            //data3.Add(new Data() { Value2 = light }); 
+
+            //this.lineSeries.Series[0].DataContext = data1;
+            //this.lineSeries.Series[1].DataContext = data2;
+            //this.lineSeries.Series[2].DataContext = data3;
+
+
+
+
+        }
+     
+        // TEMPERATURE SHOW
+        private void _timer_Tick1(object sender, object e)
+        {
+            var Client = new HttpClient();
+            Client.BaseAddress = new Uri("https://api.thingspeak.com/");
+            Client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+            var url = "https://api.thingspeak.com/update?key=923BNP2LN6RHK2U6&field2=" + this.Temperature;
+            HttpResponseMessage response = Client.GetAsync(url).Result;
+            temptext.Text = TemperatureDisplay;
+            if (this.Temperature > 21)
+            {
+                ledpin.Write(GpioPinValue.High);
+
+
+            }
+            else
+            {
+                ledpin.Write(GpioPinValue.Low);
+
+
+            }
+            ledpin.SetDriveMode(GpioPinDriveMode.Output);
+
+            //Random rand1 = new Random();
+            //answer = rand1.Next(1, 75);
+
+        }
+        // HUMIDITY SHOW
+        private void _timer_Tick2(object sender, object e)
+        {
+            var Client = new HttpClient();
+            Client.BaseAddress = new Uri("https://api.thingspeak.com/");
+            Client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+            var url = "https://api.thingspeak.com/update?key=923BNP2LN6RHK2U6&field3=" + this.Humidity;
+            HttpResponseMessage response = Client.GetAsync(url).Result;
+            humitext.Text = HumidityDisplay;
+
+
+
+        }
+        // SETUP GPIO PIN
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            _pin = GpioController.GetDefault().OpenPin(4, GpioSharingMode.Exclusive);
+            var gpio = GpioController.GetDefault();
+            ledpin = gpio.OpenPin(LED_PIN);
+            ledpin2 = gpio.OpenPin(LED_PIN2);
+            _pin = gpio.OpenPin(4, GpioSharingMode.Exclusive);
             _dht11 = new Dht11(_pin, GpioPinDriveMode.Input);
-
             _timer.Start();
 
-            //_startedAt = DateTimeOffset.Now;
         }
+
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             _timer.Stop();
 
             _pin.Dispose();
             _pin = null;
-
             _dht11 = null;
-
             base.OnNavigatedFrom(e);
         }
+        // USE DHT11 REFERENCE TO READING DATA
+
         private async void _timer_Tick(object sender, object e)
         {
             DhtReading reading = new DhtReading();
+
             reading = await _dht11.GetReadingAsync().AsTask();
 
             _retryCount.Add(reading.RetryCount);
+
             if (reading.IsValid)
             {
-                //this.TotalSuccess++;
+
                 this.Temperature = Convert.ToSingle(reading.Temperature);
                 this.Humidity = Convert.ToSingle(reading.Humidity);
-                this.LastUpdated = DateTimeOffset.Now;
-                //this.OnPropertyChanged(nameof(SuccessRate));
             }
         }
-        private float _humidity = 0f;
-        public float Humidity
-        {
-            get
-            {
-                return _humidity;
-            }
 
-            set
-            {
-               Humiditybox.Text = HumidityDisplay.ToString();
-            }
-        }
+        public float Humidity;
+
         public string HumidityDisplay
         {
             get
@@ -96,20 +255,7 @@ namespace SmartFarmer
             }
         }
 
-        private float _temperature = 0f;
-        public float Temperature
-        {
-            get
-            {
-                return _temperature;
-            }
-            set
-            {
-               
-                temperaturebox.Text =  TemperatureDisplay.ToString();
-            }
-        }
-
+        public float Temperature;
         public string TemperatureDisplay
         {
             get
@@ -119,61 +265,15 @@ namespace SmartFarmer
         }
 
         private DateTimeOffset _lastUpdated = DateTimeOffset.MinValue;
-        public DateTimeOffset LastUpdated
+        private SpiDevice _mcp3008;
+
+        public class Data
         {
-            get
-            {
-                return _lastUpdated;
-            }
-            set
-            {
-                lastupdatebox.Text = LastUpdatedDisplay.ToString();
-            }
+            public string Category { get; set; }
+
+            public double Value { get; set; }
+            public double Value1 { get; set; }
+            public double Value2 { get; set; }
         }
-
-        public string LastUpdatedDisplay
-        {
-            get
-            {
-                string returnValue = string.Empty;
-
-                TimeSpan elapsed = DateTimeOffset.Now.Subtract(this.LastUpdated);
-
-                if (this.LastUpdated == DateTimeOffset.MinValue)
-                {
-                    returnValue = "never";
-                }
-                else if (elapsed.TotalSeconds < 60d)
-                {
-                    int seconds = (int)elapsed.TotalSeconds;
-
-                    if (seconds < 2)
-                    {
-                        returnValue = "just now";
-                    }
-                    else
-                    {
-                        returnValue = string.Format("{0:0} {1} ago", seconds, seconds == 1 ? "second" : "seconds");
-                    }
-                }
-                else if (elapsed.TotalMinutes < 60d)
-                {
-                    int minutes = (int)elapsed.TotalMinutes == 0 ? 1 : (int)elapsed.TotalMinutes;
-                    returnValue = string.Format("{0:0} {1} ago", minutes, minutes == 1 ? "minute" : "minutes");
-                }
-                else if (elapsed.TotalHours < 24d)
-                {
-                    int hours = (int)elapsed.TotalHours == 0 ? 1 : (int)elapsed.TotalHours;
-                    returnValue = string.Format("{0:0} {1} ago", hours, hours == 1 ? "hour" : "hours");
-                }
-                else
-                {
-                    returnValue = "a long time ago";
-                }
-
-                return returnValue;
-            }
-        }
-
     }
 }

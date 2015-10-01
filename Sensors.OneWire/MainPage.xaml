@@ -17,7 +17,7 @@
         <SolidColorBrush x:Key="DashboardTextColor">Black</SolidColorBrush>
         <SolidColorBrush x:Key="DisplayHeaderTextColor">Black</SolidColorBrush>
         <SolidColorBrush x:Key="DisplayTextColor">Black</SolidColorBrush>
-        
+
     </Page.Resources>
 
     <Grid Background="White">
@@ -26,6 +26,7 @@
         <!-- Display -->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
@@ -45,7 +46,7 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        Margin="100,10,0,0"
-                       Foreground="{StaticResource DisplayHeaderTextColor}" />
+                       Foreground="{StaticResource DisplayHeaderTextColor}" FontFamily="Kristen ITC" />
             <TextBlock Grid.Column="0"
                        Grid.Row="0"
                        Text="{x:Bind HumidityDisplay, Mode=OneWay}"
@@ -53,7 +54,7 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        Margin="100,40,0,0"
-                       Foreground="{StaticResource DisplayTextColor}" />
+                       Foreground="{StaticResource DisplayTextColor}" FontFamily="Kristen ITC" />
 
             <!-- Temperature -->
             <TextBlock Grid.Column="0"
@@ -63,7 +64,7 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                           Margin="100,10,0,0"
-                       Foreground="{StaticResource DisplayHeaderTextColor}" />
+                       Foreground="{StaticResource DisplayHeaderTextColor}" FontFamily="Kristen ITC" />
             <TextBlock Grid.Column="0"
                        Grid.Row="1"
                        Text="{x:Bind TemperatureDisplay, Mode=OneWay}"
@@ -71,41 +72,44 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        Margin="100,40,0,0"
-                       Foreground="{StaticResource DisplayTextColor}" />
+                       Foreground="{StaticResource DisplayTextColor}" FontFamily="Kristen ITC" />
 
             <!-- Last Updated -->
             <TextBlock Grid.Column="0"
-                       Grid.Row="2"
+                       Grid.Row="3"
                        Text="Last Updated:"
                        FontSize="20"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        Foreground="{StaticResource DisplayHeaderTextColor}"
-                       Margin="100,10,0,0" />
+                       Margin="100,10,0,0" FontFamily="Kristen ITC" />
             <TextBlock Grid.Column="0"
-                       Grid.Row="2"
+                       Grid.Row="3"
                        Text="{x:Bind LastUpdatedDisplay, Mode=OneWay}"
                        FontSize="20"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        Margin="100,40,0,0"
-                       Foreground="{StaticResource DisplayTextColor}" />
+                       Foreground="{StaticResource DisplayTextColor}" FontFamily="Kristen ITC" />
+            <!-- Light -->
             <TextBlock Grid.Column="0"
                        Grid.Row="2"
                        Text="Light"
                        FontSize="20"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
-                       Margin="100,100,0,0"
-                       Foreground="{StaticResource DisplayTextColor}" />
+                       Margin="100,20,0,0"
+                       Foreground="{StaticResource DisplayTextColor}" FontFamily="Kristen ITC" />
             <TextBlock x:Name="textblocklight" Grid.Column="0"
                        Grid.Row="2"
-                       Text="LightDisplay"
+                       Text="LightDisplay "
                        FontSize="20"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
-                       Margin="100,150,0,0"
-                       Foreground="{StaticResource DisplayTextColor}" />
+                       Margin="100,50,0,0"
+                       Foreground="{StaticResource DisplayTextColor}" FontFamily="Kristen ITC" />
+
+
 
         </Grid>
     </Grid>
